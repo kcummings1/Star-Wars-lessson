@@ -19,7 +19,8 @@
             <h1 class="display-4">Star Wars - Express!</h1>
             <h3>The greatest resource in the galaxy for Star Wars statistics!</h3>
             <hr>
-            <a class="btn btn-primary btn-lg" href="#" role="button">View Characters</a>
+            <a href="/add"><button type="button" class="btn btn-danger btn-lg"><span
+                        class="glyphicon glyphicon-plus"></span>Add New Character</button></a>
         </div>
     </div>
     <!-- Optional JavaScript -->
@@ -63,36 +64,34 @@
                         </div>
 
                     </form>
-                    <br> 
+                    <br>
                     <div class="text-right">
-                        <button type="submit" class="btn btn-primary btn -md" id="addBtn"></span><span class="glyphicon glyphicon-fire"></span>Add to the Force</button>
+                        <button type="submit" class="btn btn-primary btn -md" id="addBtn"></span><span
+                                class="glyphicon glyphicon-fire"></span>Add to the Force</button>
                     </div>
                 </div>
             </div>
-
-
-
-
         </div>
     </div>
 
-<script type="text/javascript"></script>
+    <script type="text/javascript">
 
+        $("#addBtn").on("click", function () {
+            var newCharacter = {
+                name: $("#name").val().trim(),
+                role: $("#role").val().trim(),
+                age: $("#age").val().trim(),
+                forcePoints: $("#forcepoints").val().trim()
+            };
+            $.post("http://localhost:3000/api/new", newCharacter)
+                .done(function (data) {
+                    console.log(data);
+                    alert("Adding character...");
+                });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            return false;
+        })
+    </script>
 
 </body>
 

@@ -1,11 +1,38 @@
 //=======DEPENDENCIES==================
-
 var express = require("express");
 
 var app = express();
 var PORT = 3000;
 
-//==================DATA===============
+var path = require("path");
+
+var bodyParser = require('body-parser')
+
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+    extended: false
+}))
+
+// parse application/json
+app.use(bodyParser.json())
+
+// parse various different custom JSON types as JSON
+app.use(bodyParser.json({
+    type: 'application/*+json'
+}))
+
+// parse some custom thing into a Buffer
+app.use(bodyParser.raw({
+    type: 'application/vnd.custom-type'
+}))
+
+// parse an HTML body into a string
+app.use(bodyParser.text({
+    type: 'text/html'
+}))
+
+//==================DATA===============================
 
 var yoda = {
     name: "Yoda",
@@ -28,64 +55,44 @@ var obiwankenobi = {
     forcePoints: 1350
 };
 
-
-
-
-
-
 //===============Routes=========================
 
-app.get("/", function(req, res) {
-    res.send("Welcome to the Star Wars Page!");
+app.get("/", function (req, res) {
+    res.send(path.join(__dirname, "view.html"));
 });
 
+app.get("/add", function (req, res) {
+    res.send(path.join(__dirname, "add.html"));
+});
 
-app.get("/api/:characters?", function(req, res) {
+app.get("/api/:characters?", function (req, res) {
+
     var chosen = req.params.characters;
 
     if (chosen) {
         console.log(chosen);
         for (var i = 0; i < characters.length; i++) {
-            if (chosen ===characters[i].routeName) {
+            if (chosen === characters[i].routeName) {
                 res.json(characters[i]);
                 return;
             }
         }
 
         res.send("No character found");
+    } else {
+        res.json(characters);
     }
 });
 
+app.post("/api/new", function (req, res) {
+    var newcharacter = req.body;
+    newcharacter.routeName = newcharacter.name.replace(/\s+/g, "").toLowercase();
 
+    console.log(newcharacter);
 
+    characters.push(newcharacter);
 
-
-
-
-
-
-
-
-
-app.get("/yoda", function(req,res) {
-    res.json(yoda);
-});
-app.get("/darthmaul", function(req,res) {
-    res.json(darthmaul);
-});
-
-
-
-
-
-
-
-app.get("/obiwankenobi", function(req,res) {
-    res.json(obiwankenobi);
-});
-
-//==============Listener==========================
-
-app.listen(PORT, function() {
-    console.log("App listening on PORT " + PORT);
+    res.json(newcharacter);
 })
+
+
